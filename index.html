@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Big Bunch | Order Manager</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#244b3b">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="The Big Bunch"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--green:#244b3b;--green2:#376b53;--sage:#e8f0e8;--cream:#faf8f2;--ink:#20312a;--muted:#6e7b73;--line:#e0e7df;--white:#fff;--gold:#d9a94b;--red:#b84a4a;--shadow:0 8px 28px #173b2910}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink)}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 13px;background:var(--green);color:white;font-weight:650}button:hover{filter:brightness(1.06)}button.secondary{background:white;color:var(--green);border:1px solid var(--line)}button.danger{background:#fff0ef;color:var(--red);border:1px solid #f2d2cf}button.small{padding:6px 9px;font-size:12px}
+.app{display:grid;grid-template-columns:235px 1fr;min-height:100vh}.sidebar{background:var(--green);color:white;padding:24px 16px;display:flex;flex-direction:column;gap:20px}.brand{display:flex;gap:11px;align-items:center;padding:0 8px 18px;border-bottom:1px solid #ffffff30}.logo{width:42px;height:42px;border-radius:14px;background:#f6e9d4;color:var(--green);display:grid;place-items:center;font-size:23px}.brand h1{font-size:17px;line-height:1.1;margin:0}.brand small{display:block;color:#d5e1d7;font-size:11px;margin-top:5px}.nav{display:grid;gap:6px}.nav button{background:transparent;color:#e4eee6;text-align:left;display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;font-weight:550}.nav button.active,.nav button:hover{background:#ffffff1d;color:white}.nav .ico{width:20px;text-align:center;font-size:17px}.sidebar-foot{margin-top:auto;color:#c9d9ce;font-size:12px;padding:8px}
+main{min-width:0;padding:28px clamp(16px,3vw,38px) 44px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:25px}.eyebrow{color:var(--green2);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.topbar h2{margin:4px 0 0;font-size:27px;letter-spacing:-.03em}.top-actions{display:flex;gap:8px;align-items:center}.date-chip{padding:9px 12px;background:white;border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:12px}
+.page{display:none}.page.active{display:block}.welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;background:linear-gradient(110deg,#e8f0e8,#f6efe1);border:1px solid #dce8dc;padding:22px 24px;border-radius:18px;margin-bottom:20px}.welcome h3{margin:0 0 5px;font-size:20px}.welcome p{margin:0;color:#5e7064}.welcome .flower{font-size:45px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:22px}.stat,.panel,.table-wrap,.form-card{background:white;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.stat{padding:17px}.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.stat-icon{font-size:18px}.stat strong{display:block;font-size:27px;margin:10px 0 3px;letter-spacing:-.04em}.stat small{color:var(--muted);font-size:11px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 12px}.section-head h3{margin:0;font-size:17px}.panel{padding:18px}.two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:15px}.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.quick{background:#fbfcfa;border:1px solid var(--line);color:var(--ink);text-align:left;padding:14px;display:flex;gap:11px;align-items:center}.quick span:first-child{font-size:22px}.quick b{display:block}.quick small{display:block;color:var(--muted);font-weight:400;margin-top:2px}.list{display:grid;gap:10px}.list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf1ec}.list-item:last-child{border:0}.list-item b{display:block;font-size:13px}.list-item small{display:block;color:var(--muted);margin-top:3px}.pill{display:inline-flex;align-items:center;white-space:nowrap;border-radius:100px;padding:5px 9px;font-size:11px;font-weight:750;background:#edf2ed;color:#48604f}.pill.paid,.pill.delivered,.pill.active{background:#e5f5e9;color:#237044}.pill.pending,.pill.preparing{background:#fff2d8;color:#8a5b00}.pill.cancelled,.pill.overdue{background:#ffebea;color:#a63838}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:14px 0}.toolbar input,.toolbar select{max-width:100%;min-width:145px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#4e6256}.field input,.field select,.field textarea,.toolbar input,.toolbar select{width:100%;padding:10px 11px;border:1px solid #dce4dc;border-radius:9px;background:#fff;color:var(--ink);outline-color:#80a58c}.field textarea{min-height:75px;resize:vertical}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.fields .full{grid-column:1/-1}.form-card{padding:20px}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.table-wrap{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:760px}.data-table th,.data-table td{text-align:left;padding:13px 14px;border-bottom:1px solid #edf1ec;vertical-align:middle}.data-table th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#fbfcfa}.data-table tr:last-child td{border-bottom:0}.data-table td strong{display:block}.data-table td small{color:var(--muted)}.empty{text-align:center;padding:32px;color:var(--muted)}.bar-list{display:grid;gap:14px}.bar-row{display:grid;grid-template-columns:95px 1fr 75px;gap:10px;align-items:center;font-size:12px}.bar-track{height:9px;background:#edf2ed;border-radius:20px;overflow:hidden}.bar-fill{height:100%;background:var(--green2);border-radius:20px}.notice{background:#fff8e8;border:1px solid #f2e3bc;border-radius:12px;padding:12px;color:#73551c;font-size:12px;margin-bottom:14px}.muted{color:var(--muted)}.right{text-align:right}.hidden{display:none!important}.stock-low{color:var(--red);font-weight:750}.toast{position:fixed;right:20px;bottom:20px;background:#203d2e;color:white;padding:13px 17px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:20}.toast.show{opacity:1;transform:translateY(0)}.modal-backdrop{position:fixed;inset:0;background:#14251c88;display:grid;place-items:center;padding:18px;z-index:10}.modal{background:white;width:min(650px,100%);max-height:90vh;overflow:auto;border-radius:18px;padding:22px;box-shadow:0 20px 70px #0003}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modal-head h3{margin:0;font-size:20px}.modal-close{background:#f0f4ef;color:var(--green);font-size:20px;padding:4px 10px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:12px;gap:10px}.brand{padding:0 6px 10px}.nav{display:flex;overflow:auto;gap:5px}.nav button{white-space:nowrap;padding:10px}.sidebar-foot{display:none}.two-col{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar h2{font-size:23px}}
+@media(max-width:560px){main{padding:18px 12px 30px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:space-between}.welcome{padding:17px}.welcome .flower{font-size:33px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:23px}.fields{grid-template-columns:1fr}.fields .full{grid-column:auto}.quick-grid{grid-template-columns:1fr}.date-chip{display:none}.section-head{align-items:flex-start}.bar-row{grid-template-columns:76px 1fr 65px}}
+
+.checklist-box{grid-column:1/-1;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfcfa}
+.checklist-row{display:grid;grid-template-columns:minmax(150px,1fr) 82px 82px 90px auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #edf1ec}.checklist-row input[type=number]{width:100%;min-width:0;padding:8px;border:1px solid #dce4dc;border-radius:8px}.checklist-head{font-size:11px;font-weight:750;color:var(--muted);padding-bottom:5px}.buy-check{display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap}.buy-check input{width:auto}
+.checklist-row input[type=number]{width:100%;padding:8px;border:1px solid #dce4dc;border-radius:8px}
+.sync-status{display:inline-flex;padding:6px 10px;border-radius:20px;background:#fff2d8;color:#8a5b00;font-size:12px;font-weight:700}
+@media(max-width:700px){.checklist-head{display:none}.checklist-row{grid-template-columns:minmax(0,1fr) 65px 65px 82px auto;gap:5px}.checklist-row input[type=number]{padding:7px}.buy-check{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">✿</div><div><h1>The Big Bunch</h1><small>ORDER MANAGER</small></div></div>
+  <nav class="nav" id="nav">
+    <button class="active" data-page="dashboard"><span class="ico">⌂</span>Dashboard</button>
+    <button data-page="orders"><span class="ico">▤</span>Orders</button>
+    <button data-page="delivery"><span class="ico">➜</span>Deliveries</button>
+    <button data-page="stock"><span class="ico">❀</span>Flower stock</button>
+    <button data-page="subscriptions"><span class="ico">↻</span>Subscriptions</button>
+    <button data-page="reports"><span class="ico">▥</span>Sales reports</button>
+    <button data-page="notifications"><span class="ico">♧</span>Notifications</button>
+    <button data-page="settings"><span class="ico">⚙</span>Settings & backup</button>
+  </nav>
+  <div class="sidebar-foot">Order Manager v2<br>Local data + sync setup</div>
+</aside>
+<main>
+  <header class="topbar"><div><div class="eyebrow">The Big Bunch · Florist operations</div><h2 id="pageTitle">Good day, team 🌿</h2></div><div class="top-actions"><div class="date-chip" id="todayLabel"></div><button id="newOrderTop">＋ New order</button></div></header>
+  <section class="page active" id="page-dashboard">
+    <div class="welcome"><div><h3>Make every bunch count.</h3><p>Keep orders, deliveries and flower stock in one place.</p></div><div class="flower">💐</div></div>
+    <div class="stats" id="dashStats"></div>
+    <div class="two-col">
+      <div><div class="section-head"><h3>Quick actions</h3></div><div class="panel"><div class="quick-grid">
+        <button class="quick" data-action="new-order"><span>＋</span><span><b>Enter an order</b><small>Phone, walk-in or online</small></span></button>
+        <button class="quick" data-action="delivery"><span>🚚</span><span><b>Delivery board</b><small>Check today's deliveries</small></span></button>
+        <button class="quick" data-action="stock"><span>🌷</span><span><b>Update flower stock</b><small>Keep inventory current</small></span></button>
+        <button class="quick" data-action="reports"><span>▥</span><span><b>View sales</b><small>Orders and revenue summary</small></span></button>
+      </div></div>
+      <div class="section-head"><h3>Recent orders</h3><button class="secondary small" data-page="orders">View all</button></div><div class="panel"><div class="list" id="recentOrders"></div></div></div>
+      <div><div class="section-head"><h3>Today's priorities</h3></div><div class="panel"><div class="list" id="priorities"></div></div>
+      <div class="section-head"><h3>Stock watch</h3><button class="secondary small" data-page="stock">View stock</button></div><div class="panel"><div class="list" id="stockWatch"></div></div></div>
+    </div>
+  </section>
+  <section class="page" id="page-orders">
+    <div class="section-head"><div><h3>Order book</h3><div class="muted">All orders from online, phone and walk-in customers.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" id="exportAllOrders">Export all orders (Excel/CSV)</button><button id="newOrderBtn">＋ New order</button></div></div>
+    <div class="toolbar"><input id="orderSearch" placeholder="Search order, customer or phone…" aria-label="Search orders"><select id="orderStatusFilter"><option value="">All statuses</option><option>New</option><option>Confirmed</option><option>Preparing</option><option>Ready</option><option>Delivered</option><option>Cancelled</option></select><select id="orderSourceFilter"><option value="">All sources</option><option>Online</option><option>Phone</option><option>Walk-in</option></select></div>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Order</th><th>Customer</th><th>Due date & time</th><th>Source</th><th>Created by</th><th>Total</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ordersTable"></tbody></table></div>
+  </section>
+  <section class="page" id="page-delivery">
+    <div class="section-head"><div><h3>Delivery board</h3><div class="muted">Deliveries and pickups sorted by date and time.</div></div><button id="deliveryNew">＋ New order</button></div>
+    <div class="notice">Delivery and pickup times appear here. Live device syncing requires your Firebase project credentials in Settings.</div>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Order</th><th>Recipient</th><th>Date & time</th><th>Address</th><th>Instructions</th><th>Status</th><th>Action</th></tr></thead><tbody id="deliveryTable"></tbody></table></div>
+  </section>
+  <section class="page" id="page-stock">
+    <div class="section-head"><div><h3>Flower stock</h3><div class="muted">Track flowers and supplies; low stock is highlighted.</div></div><button id="addStockBtn">＋ Add item</button></div>
+    <div class="stats" id="stockStats"></div>
+    <div class="toolbar"><input id="stockSearch" placeholder="Search stock…"><select id="stockFilter"><option value="">All stock</option><option value="low">Low stock only</option></select></div>
+    <div class="section-head"><h3>Need to buy</h3><button class="secondary small" id="buyListBtn">Export shopping list</button></div><div class="panel" id="buyList"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Item</th><th>Category</th><th>In stock</th><th>Low-stock level</th><th>Unit cost</th><th>Stock value</th><th>Actions</th></tr></thead><tbody id="stockTable"></tbody></table></div>
+  </section>
+  <section class="page" id="page-subscriptions">
+    <div class="section-head"><div><h3>Flower subscriptions</h3><div class="muted">Manage recurring weekly or fortnightly flower orders.</div></div><button id="addSubBtn">＋ Add subscription</button></div>
+    <div class="notice">This MVP records subscription schedules and next dates. It does not automatically charge customers or generate recurring orders yet.</div>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Customer</th><th>Plan</th><th>Frequency</th><th>Next delivery</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody id="subsTable"></tbody></table></div>
+  </section>
+  <section class="page" id="page-reports">
+    <div class="section-head"><div><h3>Sales reports</h3><div class="muted">Revenue and order activity from the records in this browser.</div></div><button class="secondary" id="exportReport">Export orders CSV</button></div>
+    <div class="toolbar"><label class="muted">From <input type="date" id="reportFrom"></label><label class="muted">To <input type="date" id="reportTo"></label><button id="applyReport">Apply dates</button></div>
+    <div class="stats" id="reportStats"></div>
+    <div class="two-col"><div class="panel"><h3>Revenue by day</h3><div class="bar-list" id="revenueBars"></div></div><div class="panel"><h3>Order status mix</h3><div class="bar-list" id="statusBars"></div><div class="section-head"><h3>Payment summary</h3></div><div id="paymentSummary" class="list"></div></div></div>
+  </section>
+  <section class="page" id="page-notifications">
+    <div class="section-head"><div><h3>Notifications & reminders</h3><div class="muted">A simple task inbox generated from your order data.</div></div><button class="secondary" id="refreshNotices">Refresh</button></div>
+    <div class="notice">Browser notifications, SMS and email are not sent by this offline MVP. Use this inbox as an in-app reminder list.</div>
+    <div class="panel"><div class="list" id="noticeList"></div></div>
+  </section>
+  <section class="page" id="page-settings">
+    <div class="section-head"><div><h3>Settings & backup</h3><div class="muted">Keep a portable backup of this browser's records.</div></div></div>
+    <div class="two-col"><div class="form-card"><h3>Shop details</h3><form id="settingsForm" class="fields">
+      <div class="field full"><label>Shop name</label><input name="shopName" id="shopName" value="The Big Bunch" required></div>
+      <div class="field"><label>Phone</label><input name="phone" id="shopPhone" value="03 9510 7533"></div>
+      <div class="field"><label>Email</label><input name="email" id="shopEmail" value="sales@thebigbunch.com.au"></div>
+      <div class="field full"><label>Staff member names (one per line)</label><textarea id="staffMembers" name="staffMembers" placeholder="Admin&#10;Staff 1&#10;Staff 2"></textarea><small class="muted">These names appear in the order creator selection list.</small></div><div class="field full"><label>Default delivery note</label><textarea id="deliveryNote" name="deliveryNote" placeholder="Optional delivery instructions"></textarea></div>
+      <div class="full form-actions"><button type="submit">Save settings</button></div>
+    </form></div><div class="form-card"><h3>Data backup</h3><p class="muted">Export all orders, stock, subscriptions and settings as a JSON backup. Keep it somewhere safe. Import replaces the current local records.</p><div class="list"><button id="backupBtn">⬇ Download full backup</button><label class="field"><span>Restore from JSON backup</span><input type="file" id="restoreFile" accept=".json,application/json"></label><button class="danger" id="resetDemo">Reset to sample data</button></div><p class="muted" style="margin-top:16px;font-size:12px">Local backup is available now. Cloud sync requires Firebase credentials and secure database rules. Google Drive automatic backup is not yet connected in this build.</p>
+<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+<h3>Multi-device sync setup</h3>
+<p class="muted">Enter your Firebase web app configuration to enable real-time sync across devices.</p>
+<form id="cloudForm" class="fields">
+<div class="field full"><label>Firebase API key</label><input id="fbApiKey" placeholder="AIza…"></div>
+<div class="field full"><label>Firebase auth domain</label><input id="fbAuthDomain" placeholder="your-project.firebaseapp.com"></div>
+<div class="field full"><label>Firebase database URL</label><input id="fbDatabaseURL" placeholder="https://your-project-default-rtdb.region.firebasedatabase.app"></div>
+<div class="field full"><label>Firebase project ID</label><input id="fbProjectId" placeholder="your-project-id"></div>
+<div class="full form-actions"><button type="submit">Save Firebase settings</button></div>
+</form>
+<div style="margin-top:12px"><span id="syncStatus" class="sync-status">Sync not configured</span></div>
+<div class="notice" style="margin-top:12px">To activate sync, enable Anonymous Authentication and create secure Realtime Database rules in Firebase. Google Drive backup needs separate Google OAuth setup; use Download full backup until that is configured.</div></div></div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal"><div class="modal-head"><h3 id="modalTitle">New order</h3><button class="modal-close" id="modalClose" aria-label="Close">×</button></div><div id="modalBody"></div></div></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const KEY='tbb-order-manager-v2';
+const today=()=>new Date().toLocaleDateString('en-CA');
+const addDays=(n)=>{let d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('en-CA')};
+const money=n=>new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(Number(n)||0);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=prefix=>prefix+'-'+Math.random().toString(36).slice(2,7).toUpperCase();
+const seed=()=>({
+ settings:{shopName:'The Big Bunch',phone:'03 9510 7533',email:'sales@thebigbunch.com.au',deliveryNote:'',staffMembers:['Admin','Staff 1','Staff 2'],nextOrderNumber:1004},
+ orders:[
+ {id:'TBB-1001',customer:'Olivia Martin',phone:'0400 123 456',source:'Online',date:addDays(0),time:'13:00',items:[{name:'Red roses',qty:12,checked:false},{name:'Eucalyptus foliage',qty:3,checked:false}],product:'Seasonal bouquet',qty:1,total:95,paymentMethod:'Card',paymentStatus:'Paid',status:'Confirmed',deliveryType:'Delivery',recipient:'Olivia Martin',address:'12 Garden Street, Brighton VIC',instructions:'Leave with reception if unavailable',created:Date.now()-3600000},
+ {id:'TBB-1002',customer:'James Wilson',phone:'0412 345 678',source:'Phone',date:addDays(0),time:'15:00',items:[{name:'White lilies',qty:2,checked:false}],product:'White rose arrangement',qty:1,total:120,paymentMethod:'Cash',paymentStatus:'Pending',status:'Preparing',deliveryType:'Delivery',recipient:'Mia Wilson',address:'48 Park Road, Bentleigh VIC',instructions:'Birthday card: Happy birthday!',created:Date.now()-7200000},
+ {id:'TBB-1003',customer:'Sarah Lee',phone:'0433 222 111',source:'Walk-in',date:addDays(1),time:'10:00',items:[{name:'Tulips',qty:20,checked:false}],product:'Tulip bunch',qty:2,total:70,paymentMethod:'Card',paymentStatus:'Paid',status:'New',deliveryType:'Pickup',recipient:'Sarah Lee',address:'',instructions:'Pickup after 10 am',created:Date.now()-15000000}
+ ],
+ stock:[
+ {id:'ST-01',name:'Red roses',category:'Flowers',qty:120,low:40,cost:1.8},
+ {id:'ST-02',name:'White lilies',category:'Flowers',qty:18,low:20,cost:3.2},
+ {id:'ST-03',name:'Tulips',category:'Flowers',qty:75,low:25,cost:1.4},
+ {id:'ST-04',name:'Eucalyptus foliage',category:'Foliage',qty:32,low:15,cost:0.9},
+ {id:'ST-05',name:'Brown wrapping paper',category:'Packaging',qty:14,low:20,cost:0.65},
+ {id:'ST-06',name:'Glass vase - medium',category:'Accessories',qty:24,low:8,cost:5.5}
+ ],
+ subscriptions:[{id:'SUB-101',customer:'Helen Carter',phone:'0408 888 123',plan:'Seasonal home bouquet',frequency:'Weekly',nextDate:addDays(3),price:65,status:'Active',notes:'Leave at front door'}]
+});
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))||seed()}catch(e){db=seed()}
+db.settings=db.settings||{};
+db.settings.staffMembers=Array.isArray(db.settings.staffMembers)&&db.settings.staffMembers.length?db.settings.staffMembers:['Admin','Staff 1','Staff 2'];
+db.settings.nextOrderNumber=Number(db.settings.nextOrderNumber)||1001;
+let cloudDb=null,cloudReady=false,applyingRemote=false;
+const CLOUD_KEY='tbb-firebase-config-v2';
+function getCloudConfig(){try{return JSON.parse(localStorage.getItem(CLOUD_KEY)||'null')}catch(e){return null}}
+function setSyncStatus(msg,ok=false){const el=document.getElementById('syncStatus');if(el){el.textContent=msg;el.style.background=ok?'#e5f5e9':'#fff2d8';el.style.color=ok?'#237044':'#8a5b00'}}
+function initFirebase(){
+ const cfg=getCloudConfig();if(!cfg||!cfg.apiKey||!cfg.databaseURL||!cfg.projectId){setSyncStatus('Sync not configured');return}
+ if(!window.firebase){setSyncStatus('Firebase SDK unavailable');return}
+ try{
+  if(!firebase.apps.length)firebase.initializeApp(cfg);
+  firebase.auth().signInAnonymously().then(()=>{
+   cloudDb=firebase.database().ref('tbbOrderManagerV2/shared');cloudReady=true;
+   cloudDb.on('value',snap=>{const remote=snap.val();if(remote&&remote.db&&!applyingRemote){applyingRemote=true;db=remote.db;db.settings=db.settings||{};db.settings.staffMembers=Array.isArray(db.settings.staffMembers)&&db.settings.staffMembers.length?db.settings.staffMembers:['Admin','Staff 1','Staff 2'];db.settings.nextOrderNumber=Number(db.settings.nextOrderNumber)||1001;localStorage.setItem(KEY,JSON.stringify(db));renderAll();applyingRemote=false}else if(!remote){cloudDb.set({db,updatedAt:Date.now()})}setSyncStatus('Connected · real-time sync on',true)});
+  }).catch(err=>setSyncStatus('Firebase sign-in error: '+err.message));
+ }catch(err){setSyncStatus('Firebase setup error: '+err.message)}
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll();if(cloudReady&&cloudDb&&!applyingRemote)cloudDb.set({db,updatedAt:Date.now()}).catch(err=>setSyncStatus('Sync error: '+err.message))}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function navTo(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));const titles={dashboard:'Good day, team 🌿',orders:'Orders',delivery:'Deliveries',stock:'Flower stock',subscriptions:'Subscriptions',reports:'Sales reports',notifications:'Notifications',settings:'Settings & backup'};document.getElementById('pageTitle').textContent=titles[page]||'The Big Bunch';if(page==='reports')renderReports();if(page==='notifications')renderNotices();window.scrollTo({top:0,behavior:'smooth'})}
+document.getElementById('nav').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(b)navTo(b.dataset.page)});
+document.body.addEventListener('click',e=>{const p=e.target.closest('[data-page]');if(p&&!p.closest('#nav'))navTo(p.dataset.page);const a=e.target.closest('[data-action]');if(a){if(a.dataset.action==='new-order')openOrder();else navTo(a.dataset.action)}});
+document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+document.getElementById('newOrderTop').onclick=()=>openOrder();document.getElementById('newOrderBtn').onclick=()=>openOrder();document.getElementById('deliveryNew').onclick=()=>openOrder();
+document.getElementById('modalClose').onclick=closeModal;document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal()});
+function openModal(title,html){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=html;document.getElementById('modalBackdrop').classList.remove('hidden')}
+function closeModal(){document.getElementById('modalBackdrop').classList.add('hidden')}
+function pill(status){let cl=String(status).toLowerCase().replace(/\s/g,'');return `<span class="pill ${esc(cl)}">${esc(status)}</span>`}
+let orderItems=[];
+function renderOrderChecklist(){
+ const host=document.getElementById('orderChecklist');if(!host)return;
+ if(!orderItems.length){host.innerHTML='<div class="muted" style="font-size:12px;padding:6px 0">No flowers or supplies added yet.</div>';return;}
+ host.innerHTML='<div class="checklist-row checklist-head"><span>Flower / supply</span><span>Qty needed</span><span>Qty in stock</span><span>Need to buy?</span><span></span></div>'+orderItems.map((it,i)=>{
+  const name=String(it.name||'');
+  const stock=db.stock.find(s=>String(s.name||'').trim().toLowerCase()===name.trim().toLowerCase());
+  const needed=Math.max(1,Number(it.qty)||1);
+  if(it.stockQty===undefined||it.stockQty===null)it.stockQty=stock?Math.max(0,Number(stock.qty)||0):0;
+  if(it.needToBuy===undefined)it.needToBuy=Number(it.stockQty)<needed;
+  const available=Math.max(0,Number(it.stockQty)||0);
+  const status=!name.trim()?'Enter item name':available>=needed?`Enough stock entered (${available})`:`Short by ${needed-available}`;
+  const cls=(!name.trim()||available<needed)?'stock-low':'muted';
+  return `<div class="checklist-row"><div><input aria-label="Flower or supply ${i+1}" placeholder="e.g. Red roses" list="stockItemOptions" data-item-name="${i}" value="${esc(name)}" style="width:100%;padding:8px;border:1px solid #dce4dc;border-radius:8px"><small class="${cls}" style="display:block;margin-top:4px">${esc(status)}</small></div><input aria-label="Quantity needed ${i+1}" type="number" min="1" data-item-qty="${i}" value="${needed}"><input aria-label="Quantity in stock ${i+1}" type="number" min="0" data-item-stock="${i}" value="${available}"><label class="buy-check"><input type="checkbox" data-item-buy="${i}" ${it.needToBuy?'checked':''}> Buy more</label><button type="button" class="danger small" data-remove-item="${i}">Remove</button></div>`;
+ }).join('')+`<datalist id="stockItemOptions">${db.stock.map(s=>`<option value="${esc(s.name)}"></option>`).join('')}</datalist>`;
+ host.querySelectorAll('[data-item-name]').forEach(el=>el.addEventListener('change',()=>{const it=orderItems[Number(el.dataset.itemName)];it.name=el.value;const st=db.stock.find(x=>String(x.name||'').trim().toLowerCase()===el.value.trim().toLowerCase());it.stockQty=st?Math.max(0,Number(st.qty)||0):0;it.needToBuy=it.stockQty<Math.max(1,Number(it.qty)||1);renderOrderChecklist()}));
+ host.querySelectorAll('[data-item-qty]').forEach(el=>el.addEventListener('change',()=>{const it=orderItems[Number(el.dataset.itemQty)];it.qty=Math.max(1,Number(el.value)||1);it.needToBuy=Number(it.stockQty||0)<it.qty;renderOrderChecklist()}));
+ host.querySelectorAll('[data-item-stock]').forEach(el=>el.addEventListener('change',()=>{const it=orderItems[Number(el.dataset.itemStock)];it.stockQty=Math.max(0,Number(el.value)||0);it.needToBuy=it.stockQty<Math.max(1,Number(it.qty)||1);renderOrderChecklist()}));
+ host.querySelectorAll('[data-item-buy]').forEach(el=>el.addEventListener('change',()=>{orderItems[Number(el.dataset.itemBuy)].needToBuy=el.checked;renderOrderChecklist()}));
+ host.querySelectorAll('[data-remove-item]').forEach(el=>el.addEventListener('click',()=>{orderItems.splice(Number(el.dataset.removeItem),1);renderOrderChecklist()}));
+}
+async function createSequentialOrder(fields){
+ let next;
+ const currentMax=Math.max(1000,...db.orders.map(o=>{const m=String(o.id||'').match(/^TBB-(\d+)$/);return m?Number(m[1]):0}));
+ if(cloudReady&&window.firebase){
+   const counterRef=firebase.database().ref('tbbOrderManagerV2/orderCounter');
+   const result=await counterRef.transaction(current=>Math.max(Number(current)||0,currentMax,(Number(db.settings.nextOrderNumber)||1001)-1)+1);
+   if(!result.committed)throw new Error('Order number transaction was not committed');
+   next=Number(result.snapshot.val());
+ }else{next=Math.max(currentMax+1,Number(db.settings.nextOrderNumber)||1001)}
+ db.settings.nextOrderNumber=next+1;
+ db.orders.unshift({id:'TBB-'+String(next).padStart(4,'0'),...fields,created:Date.now()});
+}
+function openOrder(orderId=null){
+ const o=db.orders.find(x=>x.id===orderId)||{source:'Phone',date:today(),time:'12:00',items:[],qty:1,total:'',paymentMethod:'Card',paymentStatus:'Pending',status:'New',deliveryType:'Delivery',customer:'',phone:'',product:'',recipient:'',address:'',instructions:'',createdBy:(db.settings.staffMembers||['Admin'])[0]};
+ const editing=!!orderId;
+ orderItems=Array.isArray(o.items)?o.items.map(x=>({name:x.name||'',qty:Math.max(1,Number(x.qty)||1),checked:!!x.checked,stockQty:x.stockQty,needToBuy:x.needToBuy})):[];
+ openModal(editing?'Edit order '+orderId:'Create a new order',`<form id="orderForm" class="fields">
+ <div class="field"><label>Customer name *</label><input name="customer" required value="${esc(o.customer)}"></div><div class="field"><label>Customer phone</label><input name="phone" value="${esc(o.phone)}"></div>
+ <div class="field"><label>Order source *</label><select name="source">${['Online','Phone','Walk-in'].map(x=>`<option ${o.source===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Created by staff member *</label><select name="createdBy" required>${(db.settings.staffMembers||['Admin']).map(x=>`<option value="${esc(x)}" ${((o.createdBy||db.settings.staffMembers?.[0])===x)?'selected':''}>${esc(x)}</option>`).join('')}</select></div><div class="field"><label>Order / delivery date *</label><input type="date" name="date" required value="${esc(o.date)}"></div>
+  <div class="field"><label>Delivery / pickup time *</label><input type="time" name="time" required value="${esc(o.time||'12:00')}"></div>
+ <div class="field full"><label>Product / arrangement *</label><input name="product" required value="${esc(o.product)}" placeholder="e.g. Seasonal bouquet"></div>
+ <div class="field"><label>Quantity</label><input name="qty" type="number" min="1" value="${esc(o.qty)}" required></div><div class="field"><label>Total price (AUD) *</label><input name="total" type="number" min="0" step=".01" value="${esc(o.total)}" required></div>
+ <div class="field"><label>Payment method</label><select name="paymentMethod">${['Card','Cash','Bank transfer','Online payment','Other'].map(x=>`<option ${o.paymentMethod===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Payment status</label><select name="paymentStatus">${['Pending','Paid','Part-paid','Refunded'].map(x=>`<option ${o.paymentStatus===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field"><label>Order status</label><select name="status">${['New','Confirmed','Preparing','Ready','Delivered','Cancelled'].map(x=>`<option ${o.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Fulfilment</label><select name="deliveryType">${['Delivery','Pickup'].map(x=>`<option ${o.deliveryType===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field"><label>Recipient name</label><input name="recipient" value="${esc(o.recipient||o.customer)}"></div><div class="field"><label>Recipient contact number (optional)</label><input name="recipientPhone" type="tel" inputmode="tel" autocomplete="tel" value="${esc(o.recipientPhone||'')}" placeholder="e.g. 04xx xxx xxx"></div><div class="field full"><label>Delivery address</label><input name="address" value="${esc(o.address)}" placeholder="Required for delivery"></div>
+ <div class="field full"><label>Card message / delivery instructions</label><textarea name="instructions">${esc(o.instructions)}</textarea></div>
+  <div class="checklist-box"><strong>Flowers & supplies checklist</strong><p class="muted" style="margin:4px 0 10px;font-size:12px">Enter the quantity needed and manually record how many are in stock. Tick “Buy more” when additional stock is required.</p><div id="orderChecklist"></div><button type="button" class="secondary small" id="addChecklistItem" style="margin-top:8px">＋ Add flower / supply</button></div>
+ <div class="full form-actions"><button type="button" class="secondary" id="cancelOrder">Cancel</button><button type="submit">${editing?'Save changes':'Save order'}</button></div></form>`);
+ renderOrderChecklist();
+ document.getElementById('addChecklistItem').onclick=()=>{orderItems.push({name:'',qty:1,checked:false,stockQty:0,needToBuy:false});renderOrderChecklist()};
+ document.getElementById('cancelOrder').onclick=closeModal;
+ document.getElementById('orderForm').onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));f.qty=Number(f.qty);f.total=Number(f.total);f.items=orderItems.filter(x=>String(x.name||'').trim()).map(x=>({...x,name:String(x.name).trim(),qty:Math.max(1,Number(x.qty)||1)}));if(f.deliveryType==='Delivery'&&!f.address.trim()){if(!confirm('No delivery address entered. Save anyway?'))return}
+ if(editing){Object.assign(o,f);save();closeModal();navTo('orders');toast('Order updated')}
+ else{createSequentialOrder(f).then(()=>{save();closeModal();navTo('orders');toast('Order saved')}).catch(err=>{console.error(err);alert('Could not create the order number. Please try again.')})}
+ };
+}
+function updateOrder(id,patch){let o=db.orders.find(x=>x.id===id);if(o){Object.assign(o,patch);save();toast('Order updated')}}
+function renderDashboard(){
+ const orders=db.orders, todayOrders=orders.filter(o=>o.date===today()&&o.status!=='Cancelled'), paid=orders.filter(o=>o.paymentStatus==='Paid').reduce((s,o)=>s+o.total,0), pending=orders.filter(o=>o.paymentStatus!=='Paid'&&o.status!=='Cancelled').reduce((s,o)=>s+o.total,0), deliveries=orders.filter(o=>o.deliveryType==='Delivery'&&o.date===today()&&!['Delivered','Cancelled'].includes(o.status)).length;
+ document.getElementById('dashStats').innerHTML=[['Orders today',todayOrders.length,'▤','Scheduled for today'],['Paid revenue',money(paid),'$','Across all saved orders'],['Payments outstanding',money(pending),'◷','Unpaid or part-paid orders'],['Deliveries due',deliveries,'➜','Still to complete today']].map(x=>`<div class="stat"><div class="stat-top">${x[0]}<span class="stat-icon">${x[2]}</span></div><strong>${x[1]}</strong><small>${x[3]}</small></div>`).join('');
+ document.getElementById('recentOrders').innerHTML=orders.slice(0,4).map(o=>`<div class="list-item"><div><b>${esc(o.id)} · ${esc(o.customer)}</b><small>${esc(o.product)} · ${esc(o.date)}</small></div><div class="right">${money(o.total)}<br>${pill(o.status)}</div></div>`).join('')||'<div class="empty">No orders yet. Create your first order.</div>';
+ const priorities=[];orders.filter(o=>o.date<=today()&&!['Delivered','Cancelled'].includes(o.status)).forEach(o=>priorities.push({title:`${o.id} · ${o.status}`,desc:`${o.customer} · due ${o.date}`,tag:o.deliveryType}));orders.filter(o=>o.paymentStatus!=='Paid'&&o.status!=='Cancelled').slice(0,3).forEach(o=>priorities.push({title:`Payment pending · ${o.id}`,desc:`${o.customer} · ${money(o.total)}`,tag:'Payment'}));
+ document.getElementById('priorities').innerHTML=priorities.slice(0,6).map(p=>`<div class="list-item"><div><b>${esc(p.title)}</b><small>${esc(p.desc)}</small></div>${pill(p.tag)}</div>`).join('')||'<div class="empty">All clear. No urgent items.</div>';
+ const low=db.stock.filter(s=>s.qty<=s.low);document.getElementById('stockWatch').innerHTML=low.slice(0,5).map(s=>`<div class="list-item"><div><b>${esc(s.name)}</b><small>${esc(s.category)}</small></div><span class="stock-low">${s.qty} left</span></div>`).join('')||'<div class="empty">No low-stock items.</div>';
+}
+function printOrder(orderId){
+ const o=db.orders.find(x=>x.id===orderId);if(!o)return;
+ const stockRows=Array.isArray(o.items)&&o.items.length?o.items.map(x=>{
+  const needed=Math.max(1,Number(x.qty)||1),available=Math.max(0,Number(x.stockQty)||0);
+  const buy=x.needToBuy===undefined?available<needed:!!x.needToBuy;
+  const stockStatus=`${available} in stock`;
+  return `<tr><td>${esc(x.name||'')}</td><td>${needed}</td><td>${esc(stockStatus)}</td><td>${buy?'YES — buy more':'No'}</td><td>${x.checked?'Checked':'Not checked'}</td></tr>`;
+ }).join(''):'<tr><td colspan="5">No flowers or supplies recorded for this order.</td></tr>';
+ const safe=(v)=>esc(v===undefined||v===null||v===''?'—':v);
+ const w=window.open('','_blank','width=900,height=1000');if(!w){alert('Please allow pop-ups to print this order.');return;}
+ const html=`<!doctype html><html><head><meta charset="utf-8"><title>${safe(o.id)} - The Big Bunch</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+ *{box-sizing:border-box}body{font:14px Arial,sans-serif;color:#222;padding:26px;max-width:850px;margin:auto;line-height:1.45}h1{color:#315c42;margin:0 0 4px;font-size:25px}.muted{color:#666}.top{display:flex;justify-content:space-between;gap:18px;border-bottom:3px solid #315c42;padding-bottom:14px}.top-right{text-align:right}.order-no{font-size:20px;font-weight:bold}.section{margin-top:20px;break-inside:avoid}h2{font-size:16px;color:#315c42;border-bottom:1px solid #ccd8ce;padding-bottom:5px;margin:0 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{border:1px solid #d8ded9;border-radius:6px;padding:11px;min-width:0}.card b.label{display:block;color:#555;font-size:11px;text-transform:uppercase;margin-bottom:4px}.value{white-space:pre-wrap;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;margin-top:8px}td,th{text-align:left;border:1px solid #d8ded9;padding:8px;vertical-align:top}th{background:#f1f5f1}.total{text-align:right;font-size:23px;font-weight:bold;margin-top:18px;color:#244b32}.footer{border-top:1px solid #ddd;margin-top:26px;padding-top:10px;color:#666;font-size:12px}.no-print{margin-top:18px;padding:10px 18px;background:#315c42;color:white;border:0;border-radius:5px;font-size:14px}@media(max-width:600px){body{padding:12px}.grid{grid-template-columns:1fr}.top{flex-direction:column}.top-right{text-align:left}}@media print{body{padding:0;max-width:none}.no-print{display:none}.card{break-inside:avoid}tr{break-inside:avoid}}
+ </style></head><body>
+ <header class="top"><div><h1>${safe(db.settings.shopName||'The Big Bunch')}</h1><div class="muted">${safe(db.settings.phone)}${db.settings.email?' · '+safe(db.settings.email):''}</div></div><div class="top-right"><div style="font-size:18px;font-weight:bold">ORDER DETAILS</div><div class="order-no">${safe(o.id)}</div><div>Order date: ${safe(o.date)}</div><div>Delivery / pickup time: ${safe(o.time)}</div></div></header>
+ <section class="section"><h2>Customer and recipient</h2><div class="grid"><div class="card"><b class="label">Customer name</b><div class="value">${safe(o.customer)}</div><b class="label" style="margin-top:9px">Customer phone</b><div class="value">${safe(o.phone)}</div></div><div class="card"><b class="label">Recipient name</b><div class="value">${safe(o.recipient||o.customer)}</div><b class="label" style="margin-top:9px">Recipient contact number</b><div class="value">${safe(o.recipientPhone)}</div></div></div></section>
+ <section class="section"><h2>Order and fulfilment</h2><div class="grid"><div class="card"><b class="label">Product / arrangement</b><div class="value">${safe(o.product)}</div><b class="label" style="margin-top:9px">Quantity</b><div class="value">${safe(o.qty||1)}</div><b class="label" style="margin-top:9px">Order source</b><div class="value">${safe(o.source)}</div><b class="label" style="margin-top:9px">Created by staff member</b><div class="value">${safe(o.createdBy)}</div></div><div class="card"><b class="label">Fulfilment method</b><div class="value">${safe(o.deliveryType)}</div><b class="label" style="margin-top:9px">Delivery / pickup date</b><div class="value">${safe(o.date)}</div><b class="label" style="margin-top:9px">Delivery / pickup time</b><div class="value">${safe(o.time)}</div><b class="label" style="margin-top:9px">Delivery address</b><div class="value">${safe(o.address|| (o.deliveryType==='Pickup'?'Customer pickup':'—'))}</div></div></div></section>
+ <section class="section"><h2>Flowers and supplies checklist</h2><table><thead><tr><th>Flower / supply</th><th>Qty needed</th><th>Qty in stock</th><th>Need to buy?</th><th>Checklist</th></tr></thead><tbody>${stockRows}</tbody></table></section>
+ <section class="section"><h2>Card message and special instructions</h2><div class="card value">${safe(o.instructions)}</div></section>
+ <section class="section"><h2>Order status and payment</h2><div class="grid"><div class="card"><b class="label">Order status</b><div class="value">${safe(o.status)}</div></div><div class="card"><b class="label">Payment status</b><div class="value">${safe(o.paymentStatus)}</div></div><div class="card"><b class="label">Payment method</b><div class="value">${safe(o.paymentMethod)}</div></div><div class="card"><b class="label">Order total (AUD)</b><div class="value">${money(o.total)}</div></div></div><div class="total">TOTAL: ${money(o.total)}</div></section>
+ <footer class="footer">Thank you for choosing ${safe(db.settings.shopName||'The Big Bunch')}.</footer><button class="no-print" onclick="window.print()">Print this order</button><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`;
+ w.document.open();w.document.write(html);w.document.close();
+}
+function renderOrders(){const q=(document.getElementById('orderSearch').value||'').toLowerCase(),st=document.getElementById('orderStatusFilter').value,src=document.getElementById('orderSourceFilter').value;let arr=db.orders.filter(o=>(!q||[o.id,o.customer,o.phone,o.product].some(x=>String(x||'').toLowerCase().includes(q)))&&(!st||o.status===st)&&(!src||o.source===src));document.getElementById('ordersTable').innerHTML=arr.map(o=>`<tr><td><strong>${esc(o.id)}</strong><small>${esc(o.product)}</small></td><td><strong>${esc(o.customer)}</strong><small>${esc(o.recipientPhone||o.phone||"No contact number")}</small></td><td><strong>${esc(o.date)}</strong><small>${esc(o.time||'Time not set')}</small></td><td>${esc(o.source)}</td><td>${esc(o.createdBy||"—")}</td><td><strong>${money(o.total)}</strong></td><td>${pill(o.paymentStatus)}<small>${esc(o.paymentMethod)}</small></td><td><select aria-label="Status for ${esc(o.id)}" onchange="updateOrder('${o.id}',{status:this.value})">${['New','Confirmed','Preparing','Ready','Delivered','Cancelled'].map(x=>`<option ${o.status===x?'selected':''}>${x}</option>`).join('')}</select></td><td><button class="secondary small" onclick="openOrder('${o.id}')">Edit</button> <button class="secondary small" onclick="printOrder('${o.id}')">Print</button></td></tr>`).join('')||'<tr><td colspan="9" class="empty">No matching orders found.</td></tr>'}
+['orderSearch','orderStatusFilter','orderSourceFilter'].forEach(id=>document.getElementById(id).addEventListener('input',renderOrders));
+function renderDelivery(){const arr=db.orders.filter(o=>o.status!=='Cancelled').sort((a,b)=>(a.date+'T'+(a.time||'23:59')).localeCompare(b.date+'T'+(b.time||'23:59')));document.getElementById('deliveryTable').innerHTML=arr.map(o=>`<tr><td><strong>${esc(o.id)}</strong><small>${esc(o.product)}</small></td><td><strong>${esc(o.recipient||o.customer)}</strong><small>${esc(o.recipientPhone||o.phone||"No contact number")}</small></td><td><strong>${esc(o.date)}</strong><small>${esc(o.time||'Time not set')} · ${esc(o.deliveryType||'Delivery')}</small></td><td>${esc(o.address||'—')}</td><td>${esc(o.instructions||'—')}</td><td>${pill(o.status)}</td><td><select aria-label="Delivery status ${esc(o.id)}" onchange="updateOrder('${o.id}',{status:this.value})">${['New','Confirmed','Preparing','Ready','Delivered'].map(x=>`<option ${o.status===x?'selected':''}>${x}</option>`).join('')}</select></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No delivery orders yet.</td></tr>'}
+document.getElementById('addStockBtn').onclick=()=>openStock();
+document.getElementById('buyListBtn').onclick=()=>{const rows=shortages();const csv=[['Item','Needed','In stock','Buy','Orders'],...rows.map(x=>[x.name,x.qty,x.available,x.buy,[...new Set(x.orders)].join('; ')])];download('the-big-bunch-shopping-list-'+today()+'.csv',csv.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n'),'text/csv;charset=utf-8')};
+function openStock(id=null){const s=db.stock.find(x=>x.id===id)||{name:'',category:'Flowers',qty:0,low:10,cost:0};openModal(id?'Edit stock item':'Add stock item',`<form id="stockForm" class="fields"><div class="field full"><label>Item name *</label><input name="name" required value="${esc(s.name)}"></div><div class="field"><label>Category</label><select name="category">${['Flowers','Foliage','Packaging','Accessories','Other'].map(x=>`<option ${s.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Quantity in stock</label><input type="number" min="0" name="qty" value="${s.qty}" required></div><div class="field"><label>Low-stock level</label><input type="number" min="0" name="low" value="${s.low}" required></div><div class="field"><label>Unit cost (AUD)</label><input type="number" min="0" step=".01" name="cost" value="${s.cost}" required></div><div class="full form-actions"><button type="button" class="secondary" id="cancelStock">Cancel</button><button>Save item</button></div></form>`);document.getElementById('cancelStock').onclick=closeModal;document.getElementById('stockForm').onsubmit=e=>{e.preventDefault();let f=Object.fromEntries(new FormData(e.target));f.qty=+f.qty;f.low=+f.low;f.cost=+f.cost;if(id)Object.assign(s,f);else db.stock.push({id:uid('ST'),...f});save();closeModal();toast('Stock saved')}}
+
+function shortages(){
+ const needed={};
+ db.orders.filter(o=>!['Delivered','Cancelled'].includes(o.status)).forEach(o=>(o.items||[]).forEach(it=>{
+  const name=String(it.name||'').trim();if(!name)return;const key=name.toLowerCase();
+  if(!needed[key])needed[key]={name,qty:0,orders:[]};needed[key].qty+=Math.max(0,Number(it.qty)||0);needed[key].orders.push(o.id);
+ }));
+ return Object.values(needed).map(n=>{const st=db.stock.find(x=>x.name.toLowerCase()===n.name.toLowerCase());const available=st?Number(st.qty)||0:0;return {...n,available,buy:Math.max(0,n.qty-available)}}).filter(x=>x.buy>0);
+}
+function renderBuyList(){const el=document.getElementById('buyList');if(!el)return;const rows=shortages();el.innerHTML=rows.length?`<div class="list">${rows.map(x=>`<div class="list-item"><div><b>${esc(x.name)}</b><small>Needed ${x.qty} · In stock ${x.available} · Orders ${esc([...new Set(x.orders)].join(', '))}</small></div><span class="stock-low">Buy ${x.buy}</span></div>`).join('')}</div>`:'<div class="muted">No shortages from open orders. Add items to an order checklist to calculate buying needs.</div>'}
+
+function renderStock(){renderBuyList();let q=(document.getElementById('stockSearch').value||'').toLowerCase(),low=document.getElementById('stockFilter').value==='low';let arr=db.stock.filter(s=>(!q||s.name.toLowerCase().includes(q)||s.category.toLowerCase().includes(q))&&(!low||s.qty<=s.low));document.getElementById('stockStats').innerHTML=[['Stock items',db.stock.length],['Low-stock alerts',db.stock.filter(s=>s.qty<=s.low).length],['Estimated stock value',money(db.stock.reduce((a,s)=>a+s.qty*s.cost,0))],['Categories',new Set(db.stock.map(s=>s.category)).size]].map(x=>`<div class="stat"><div class="stat-top">${x[0]}</div><strong>${x[1]}</strong></div>`).join('');document.getElementById('stockTable').innerHTML=arr.map(s=>`<tr><td><strong>${esc(s.name)}</strong><small>${esc(s.id)}</small></td><td>${esc(s.category)}</td><td class="${s.qty<=s.low?'stock-low':''}">${s.qty} ${s.qty<=s.low?' · LOW':''}</td><td>${s.low}</td><td>${money(s.cost)}</td><td>${money(s.qty*s.cost)}</td><td><button class="secondary small" onclick="openStock('${s.id}')">Edit</button> <button class="secondary small" onclick="adjustStock('${s.id}',-1)">−</button> <button class="secondary small" onclick="adjustStock('${s.id}',1)">+</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No stock items found.</td></tr>'}
+window.adjustStock=(id,delta)=>{let s=db.stock.find(x=>x.id===id);if(s){s.qty=Math.max(0,s.qty+delta);save();toast('Stock quantity updated')}};
+['stockSearch','stockFilter'].forEach(id=>document.getElementById(id).addEventListener('input',renderStock));
+document.getElementById('addSubBtn').onclick=()=>openSub();
+function openSub(id=null){const s=db.subscriptions.find(x=>x.id===id)||{customer:'',phone:'',plan:'Seasonal bouquet',frequency:'Weekly',nextDate:addDays(7),price:65,status:'Active',notes:''};openModal(id?'Edit subscription':'Add flower subscription',`<form id="subForm" class="fields"><div class="field"><label>Customer name *</label><input name="customer" required value="${esc(s.customer)}"></div><div class="field"><label>Phone</label><input name="phone" value="${esc(s.phone)}"></div><div class="field full"><label>Plan / arrangement *</label><input name="plan" required value="${esc(s.plan)}"></div><div class="field"><label>Frequency</label><select name="frequency">${['Weekly','Fortnightly','Monthly'].map(x=>`<option ${s.frequency===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Next delivery date</label><input type="date" name="nextDate" value="${esc(s.nextDate)}" required></div><div class="field"><label>Price per delivery (AUD)</label><input type="number" step=".01" min="0" name="price" value="${s.price}" required></div><div class="field"><label>Status</label><select name="status">${['Active','Paused','Cancelled'].map(x=>`<option ${s.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field full"><label>Notes</label><textarea name="notes">${esc(s.notes)}</textarea></div><div class="full form-actions"><button type="button" class="secondary" id="cancelSub">Cancel</button><button>Save subscription</button></div></form>`);document.getElementById('cancelSub').onclick=closeModal;document.getElementById('subForm').onsubmit=e=>{e.preventDefault();let f=Object.fromEntries(new FormData(e.target));f.price=+f.price;if(id)Object.assign(s,f);else db.subscriptions.push({id:uid('SUB'),...f});save();closeModal();toast('Subscription saved')}}
+function renderSubs(){document.getElementById('subsTable').innerHTML=db.subscriptions.map(s=>`<tr><td><strong>${esc(s.customer)}</strong><small>${esc(s.phone)}</small></td><td>${esc(s.plan)}</td><td>${esc(s.frequency)}</td><td>${esc(s.nextDate)}</td><td>${money(s.price)}</td><td>${pill(s.status)}</td><td><button class="secondary small" onclick="openSub('${s.id}')">Edit</button> <button class="secondary small" onclick="makeSubOrder('${s.id}')">Create order</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">No subscriptions yet.</td></tr>'}
+window.makeSubOrder=id=>{let s=db.subscriptions.find(x=>x.id===id);if(!s)return;openOrder();setTimeout(()=>{const f=document.getElementById('orderForm');if(f){f.elements.customer.value=s.customer;f.elements.phone.value=s.phone;f.elements.product.value=s.plan;f.elements.total.value=s.price;f.elements.date.value=s.nextDate;f.elements.source.value='Phone';f.elements.deliveryType.value='Delivery';f.elements.instructions.value='Subscription: '+s.frequency+(s.notes?' · '+s.notes:'')}},30)}
+function renderReports(){let from=document.getElementById('reportFrom').value,to=document.getElementById('reportTo').value;let arr=db.orders.filter(o=>(!from||o.date>=from)&&(!to||o.date<=to)&&o.status!=='Cancelled');let revenue=arr.reduce((a,o)=>a+o.total,0),paid=arr.filter(o=>o.paymentStatus==='Paid').reduce((a,o)=>a+o.total,0),out=arr.filter(o=>o.paymentStatus!=='Paid').reduce((a,o)=>a+o.total,0);document.getElementById('reportStats').innerHTML=[['Orders',arr.length],['Order value',money(revenue)],['Marked paid',money(paid)],['Outstanding',money(out)]].map(x=>`<div class="stat"><div class="stat-top">${x[0]}</div><strong>${x[1]}</strong></div>`).join('');
+ let days={};arr.forEach(o=>days[o.date]=(days[o.date]||0)+o.total);let d=Object.entries(days).sort((a,b)=>a[0].localeCompare(b[0])).slice(-7),max=Math.max(1,...d.map(x=>x[1]));document.getElementById('revenueBars').innerHTML=d.map(([day,val])=>`<div class="bar-row"><span>${esc(day.slice(5))}</span><div class="bar-track"><div class="bar-fill" style="width:${val/max*100}%"></div></div><b class="right">${money(val)}</b></div>`).join('')||'<div class="empty">No orders in this period.</div>';
+ let statuses=['New','Confirmed','Preparing','Ready','Delivered'];let counts=statuses.map(s=>[s,arr.filter(o=>o.status===s).length]),mx=Math.max(1,...counts.map(x=>x[1]));document.getElementById('statusBars').innerHTML=counts.map(([s,n])=>`<div class="bar-row"><span>${s}</span><div class="bar-track"><div class="bar-fill" style="width:${n/mx*100}%"></div></div><b class="right">${n}</b></div>`).join('');let methods=['Paid','Pending','Part-paid','Refunded'];document.getElementById('paymentSummary').innerHTML=methods.map(s=>{let xs=arr.filter(o=>o.paymentStatus===s);return `<div class="list-item"><div><b>${s}</b><small>${xs.length} orders</small></div><strong>${money(xs.reduce((a,o)=>a+o.total,0))}</strong></div>`}).join('')}
+document.getElementById('applyReport').onclick=renderReports;document.getElementById('reportFrom').value=addDays(-30);document.getElementById('reportTo').value=today();
+function renderNotices(){let n=[];db.orders.filter(o=>o.date<=today()&&!['Delivered','Cancelled'].includes(o.status)).forEach(o=>n.push({icon:'🚚',title:`Order ${o.id} is due`,desc:`${o.customer} · ${o.status} · ${o.date}`,tag:'Delivery'}));db.orders.filter(o=>o.paymentStatus!=='Paid'&&o.status!=='Cancelled').forEach(o=>n.push({icon:'💳',title:`Payment to follow up: ${o.id}`,desc:`${o.customer} · ${money(o.total)} · ${o.paymentStatus}`,tag:'Payment'}));db.stock.filter(s=>s.qty<=s.low).forEach(s=>n.push({icon:'🌷',title:`Low stock: ${s.name}`,desc:`${s.qty} remaining · low-stock level ${s.low}`,tag:'Stock'}));db.subscriptions.filter(s=>s.status==='Active'&&s.nextDate<=addDays(3)).forEach(s=>n.push({icon:'↻',title:`Subscription coming up: ${s.customer}`,desc:`${s.plan} · ${s.nextDate}`,tag:'Subscription'}));document.getElementById('noticeList').innerHTML=n.map(x=>`<div class="list-item"><div style="display:flex;gap:12px;align-items:center"><span style="font-size:23px">${x.icon}</span><div><b>${esc(x.title)}</b><small>${esc(x.desc)}</small></div></div>${pill(x.tag)}</div>`).join('')||'<div class="empty">No reminders right now.</div>'}
+document.getElementById('refreshNotices').onclick=()=>{renderNotices();toast('Reminders refreshed')};
+document.getElementById('settingsForm').onsubmit=e=>{e.preventDefault();db.settings={shopName:document.getElementById('shopName').value,phone:document.getElementById('shopPhone').value,email:document.getElementById('shopEmail').value,deliveryNote:document.getElementById('deliveryNote').value,staffMembers:document.getElementById('staffMembers').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),nextOrderNumber:Number(db.settings.nextOrderNumber)||1001};save();toast('Shop settings saved')};
+function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+document.getElementById('backupBtn').onclick=()=>download('the-big-bunch-backup-'+today()+'.json',JSON.stringify(db,null,2),'application/json');
+document.getElementById('restoreFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!data.orders||!data.stock||!data.subscriptions)throw Error('Invalid backup');if(confirm('Restore this backup? Current local data will be replaced.')){db=data;save();toast('Backup restored')}}catch(err){alert('Could not restore file. Please choose a valid The Big Bunch JSON backup.')}e.target.value=''};
+function exportAllOrdersCSV(){
+ const headers=['Order ID','Customer','Customer Phone','Source','Order Date','Time','Product','Quantity','Total AUD','Payment Method','Payment Status','Order Status','Fulfilment','Created By','Recipient','Recipient Contact Number','Address','Instructions','Flowers / Supplies'];
+ const rows=[headers,...db.orders.map(o=>[o.id,o.customer,o.phone,o.source,o.date,o.time||'',o.product,o.qty,o.total,o.paymentMethod,o.paymentStatus,o.status,o.deliveryType,o.createdBy||'',o.recipient,o.recipientPhone||'',o.address,o.instructions,(o.items||[]).map(x=>`${x.name} x${x.qty}${x.checked?' (checked)':''}`).join('; ')])];
+ const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ download('the-big-bunch-all-orders-'+today()+'.csv',csv,'text/csv;charset=utf-8');
+}
+document.getElementById('exportReport').onclick=exportAllOrdersCSV;
+document.getElementById('exportAllOrders').onclick=exportAllOrdersCSV;
+document.getElementById('resetDemo').onclick=()=>{if(confirm('Replace all current data with sample data? Download a backup first if you need to keep your records.')){db=seed();save();toast('Sample data restored')}};
+function renderAll(){renderDashboard();renderOrders();renderDelivery();renderStock();renderSubs();renderReports();renderNotices();document.getElementById('shopName').value=db.settings.shopName||'The Big Bunch';document.getElementById('shopPhone').value=db.settings.phone||'';document.getElementById('shopEmail').value=db.settings.email||'';document.getElementById('deliveryNote').value=db.settings.deliveryNote||'';document.getElementById('staffMembers').value=(db.settings.staffMembers||[]).join('\n')}
+renderAll();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('PWA service worker:',err)))}
+const existingCloud=getCloudConfig();
+if(existingCloud){document.getElementById('fbApiKey').value=existingCloud.apiKey||'';document.getElementById('fbAuthDomain').value=existingCloud.authDomain||'';document.getElementById('fbDatabaseURL').value=existingCloud.databaseURL||'';document.getElementById('fbProjectId').value=existingCloud.projectId||'';initFirebase()}
+document.getElementById('cloudForm').onsubmit=e=>{e.preventDefault();const cfg={apiKey:document.getElementById('fbApiKey').value.trim(),authDomain:document.getElementById('fbAuthDomain').value.trim(),databaseURL:document.getElementById('fbDatabaseURL').value.trim(),projectId:document.getElementById('fbProjectId').value.trim()};if(!cfg.apiKey||!cfg.databaseURL||!cfg.projectId){toast('Enter Firebase API key, database URL and project ID');return}localStorage.setItem(CLOUD_KEY,JSON.stringify(cfg));setSyncStatus('Connecting to Firebase…');initFirebase();toast('Firebase settings saved')};
+</script>
+</body></html>
